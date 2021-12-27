@@ -1,0 +1,35 @@
+[package]
+name = "NR_AUL_Translate"
+version = "0.1.0"
+edition = "2018"
+#build = "build.rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name="f"
+crate-type = ["cdylib"]
+
+[dependencies]
+bytes = "1"
+hex = "0.4.3"
+once_cell = "1.8.0"
+cty = "*"
+serde_json = "1.0.72"
+serde = { version = "1.0", features = ["derive"] }
+
+[dependencies.windows]
+version = "0.23.0"
+features = [
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_System_LibraryLoader",
+    "Win32_System_SystemServices",
+    "Win32_System_Diagnostics_Debug",
+    "Win32_System_Console",
+    "Win32_System_Memory",
+]
+
+#[build-dependencies]
+#bindgen = "0.59.2"
+
