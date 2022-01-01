@@ -1,5 +1,4 @@
 //use super::*;
-use cty::*;
 use windows::Win32::System::SystemServices::IMAGE_BASE_RELOCATION;
 
 pub unsafe fn ReadReloc(pReloc: &mut usize, mut vec: Box<Vec<usize>>)

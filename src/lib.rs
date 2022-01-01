@@ -3,10 +3,8 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 
-use std::fs::File;
-use std::io::Write;
 use std::ptr::null_mut;
-use windows::Win32::Foundation::HINSTANCE;
+use windows::Win32::Foundation::{HINSTANCE, PSTR};
 use windows::Win32::System::Diagnostics::Debug::IMAGE_NT_HEADERS32;
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::System::Memory::{VirtualProtect, PAGE_READWRITE};
@@ -71,7 +69,8 @@ fn Init()
     unsafe {
         NR::Base::DebugOutput(format!("hi!"));
         let hHandle = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
-        let ExEdit = GetModuleHandleA("exedit.auf").0;
+        let mut _ExEditstr = String::from("exedit.auf");
+        let ExEdit = GetModuleHandleA(PSTR(_ExEditstr.as_mut_ptr()));
         let pIDH: *const IMAGE_DOS_HEADER = ExEdit as *const IMAGE_DOS_HEADER;
 
         if pIDH == null_mut() {
@@ -127,7 +126,7 @@ fn Init()
         NR::Res::showRes(&Resource);
         //NR::DebugOutput(format!("{:?}",nrresvec));
         VirtualProtect(resRVA as *const c_void, resIDD.Size as usize, old, &mut new);
-        let mut tmp = (ImageBase + relocRVA) as usize;
+        let tmp = (ImageBase + relocRVA) as usize;
         let mut vecptr = NR::Reloc::ReadRelocAll(tmp);
         vecptr.sort();
         
