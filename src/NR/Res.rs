@@ -29,15 +29,15 @@ pub unsafe fn ReadImgResDir(
 ) //-> Base::Resource
 {
     //let mut Res = Base::Resource::new();
-    println!("readimgresdir");
+    //println!("readimgresdir");
     let num_of_entries = (*pImgResDir).NumberOfIdEntries as usize + (*pImgResDir).NumberOfNamedEntries as usize;
     let mut i = 0usize;
     let mut pImgResDirEnt = (pImgResDir as usize + size_of::<IMAGE_RESOURCE_DIRECTORY>()) as *const IMAGE_RESOURCE_DIRECTORY_ENTRY;
     while i < num_of_entries
     {
-        println!("inwhile");
-        println!("pimgresdir : {:x}",pImgResDir as usize);
-        println!("num of entries : {:x}",num_of_entries);
+        //println!("inwhile");
+        //println!("pimgresdir : {:x}",pImgResDir as usize);
+        //println!("num of entries : {:x}",num_of_entries);
         refRes.Nextptr.push(Base::Resource_1 { IsData: false, Res: Box::new(Base::Resource::new()), ..Default::default()});
         let len = refRes.Nextptr.len();
         ReadImgResDirEnt(pImgResDirEnt, pNRTrait, pVec, refRes.Nextptr[len-1].Res.as_mut());
@@ -171,7 +171,7 @@ pub unsafe fn NameId(
     // if utf-16 string
     if bitfield & 0x80000000 == 0x80000000
     {
-        println!("1");
+        //println!("1");
         let mut adr = (bitfield & 0x7FFFFFFF) as usize;
         adr += (*refNRTrait).ImageBase + (*refNRTrait).ResRVA;
         let adr = adr as *const IMAGE_RESOURCE_DIR_STRING_U;
@@ -188,7 +188,7 @@ pub unsafe fn NameId(
     }
     else
     {
-        println!("2");
+        //println!("2");
         return Base::Resource_0{IsName: false, Id: (bitfield & 0xFFFF) as u16, Name: Default::default() };
     }
 }
@@ -207,12 +207,12 @@ pub unsafe fn ReadImgResDirEnt(
     let adr = (bitfield & 0x7FFFFFFF) as usize + (*refNRTrait).ImageBase + (*refNRTrait).ResRVA;
     if bitfield & 0x80000000 != 0
     {
-        println!("3");
+        //println!("3");
         ReadImgResDir(adr as *const IMAGE_RESOURCE_DIRECTORY, refNRTrait, refVec, refRes);
     }
     else
     {
-        println!("4");
+        //println!("4");
         let a = adr as *const IMAGE_RESOURCE_DATA_ENTRY;
         let mut ptr = ((*a).OffsetToData as usize + (*refNRTrait).ImageBase) as *const u8;
         let mut i = 0u32;
@@ -223,7 +223,7 @@ pub unsafe fn ReadImgResDirEnt(
             ptr = ptr.offset(1);
             i += 1;
         }
-        println!("4-fin");
+        //println!("4-fin");
         refRes.Nextptr.push(Base::Resource_1 { IsData: true, Data: vec.clone(), CodePage: (*a).CodePage, ..Default::default()});
     }
     /*

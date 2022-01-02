@@ -62,6 +62,9 @@ pub extern "system" fn DllMain(hInst : HINSTANCE, fdwReason : usize, pvReserved:
 
 fn Init()
 {
+    let mut word = String::new();
+    std::io::stdin().read_line(&mut word).ok();
+
     //panic!("hi!");
     let mut a_vec = Box::new(Vec::<String>::new());
     let mut b_vec = Box::new(Vec::<String>::new());
@@ -131,7 +134,7 @@ fn Init()
         let tmp = (ImageBase + relocRVA) as usize;
         let mut vecptr = NR::Reloc::ReadRelocAll(tmp);
         vecptr.sort();
-        
+
         let mut file = std::fs::File::create("reloc.txt").unwrap();
         let mut file2 = std::fs::File::create("reloc2.txt").unwrap();
         let mut usizevec = Vec::<usize>::new();
