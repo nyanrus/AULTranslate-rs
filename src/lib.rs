@@ -84,14 +84,6 @@ fn Init()
         let mut Resource = NR::Base::Resource::new();
         NR::Res::ReadImgResDir(pIRD, &mut a, &mut IRDEarrvec, &mut Resource);
         println!("finish");
-        /*
-        while i < (IdEntryNum as u32 + NameEntryNum as u32)
-        {
-            NR::DebugOutput(format!("Entry Num : {:x}",IdEntryNum as u32 + NameEntryNum as u32));
-            pIRDE = pIRDE.offset(1);
-            i += 1;
-        }
-         */
         //println!("Resource : {:?}",Resource);
         NR::Res::showRes(&Resource);
         //NR::DebugOutput(format!("{:?}",nrresvec));
@@ -105,13 +97,13 @@ fn Init()
         let mut usizevec = Vec::<usize>::new();
         for i in vecptr
         {
-            file.write(format!("{:x}\n",i).as_bytes());
+            file.write(format!("{:x}\n",i).as_bytes()).unwrap();
             usizevec.push(*((i + ImageBase as usize) as *const usize));
         }
         usizevec.sort();
         for i in usizevec
         {
-            file2.write(format!("{:x}\n", i).as_bytes());
+            file2.write(format!("{:x}\n", i).as_bytes()).unwrap();
         }
     }
 }

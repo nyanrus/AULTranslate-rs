@@ -26,7 +26,7 @@ pub unsafe fn ReadImgResDir(
     pNRTrait: &mut Base::NRTrait,
     pVec: &mut Vec<[Base::ImgResDirEnt; 3]>,
     refRes : &mut Base::Resource,
-) //-> Base::Resource
+)
 {
     //let mut Res = Base::Resource::new();
     //println!("readimgresdir");
@@ -137,5 +137,42 @@ pub unsafe fn showRes(refRes : &Base::Resource)
             showRes(refRes.Nextptr[i].Res.as_ref());
         }
         i += 1;
+    }
+}
+
+pub unsafe fn Res2rsrc(refRes : &Base::Resource) //-> Vec<u8>
+{
+    
+}
+
+pub unsafe fn MakeImgResDir(NamedEntries : u16, IdEntries : u16) -> IMAGE_RESOURCE_DIRECTORY
+{
+    return IMAGE_RESOURCE_DIRECTORY{
+        Characteristics: 0,
+        TimeDateStamp: 0,
+        MajorVersion: 0,
+        MinorVersion: 0,
+        NumberOfNamedEntries: NamedEntries,
+        NumberOfIdEntries: IdEntries
+    };
+}
+
+pub unsafe fn Res2Size(refRes: &Base::Resource, num : usize) -> usize
+{
+    if num != 0
+    {
+        let mut size = 0usize;
+        for i in (*refRes).Nextptr.clone()
+        {
+            size += Res2Size(i.Res.as_ref(), num-1);
+        }
+        return size;
+    }
+    else
+    {
+        let mut size = size_of::<IMAGE_RESOURCE_DIRECTORY>();
+        let numofent = refRes.Nextptr.len();
+        size += numofent * size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>();
+        return size;
     }
 }

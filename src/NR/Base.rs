@@ -101,6 +101,8 @@ pub struct Resource_1
     pub Data : Vec<u8>,
     pub CodePage : u32,
 }
+
+
 impl Default for Resource
 {
     fn default() -> Self {
@@ -128,3 +130,4 @@ impl Resource
         Resource{ NameId: Default::default(), Nextptr: Default::default() }
     }
 }
+
