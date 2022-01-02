@@ -3,6 +3,7 @@
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
 
+use std::io::Write;
 use std::ptr::null_mut;
 use windows::Win32::Foundation::{HINSTANCE, PSTR};
 use windows::Win32::System::Diagnostics::Debug::IMAGE_NT_HEADERS32;
@@ -69,10 +70,11 @@ fn Init()
     unsafe {
         NR::Base::DebugOutput(format!("hi!"));
         let hHandle = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
-        let mut _ExEditstr = String::from("exedit.auf");
-        let ExEdit = GetModuleHandleA(PSTR(_ExEditstr.as_mut_ptr()));
+        let mut _ExEditstr = String::from("exedit.auf").as_mut_ptr();
+        let ExEdit = GetModuleHandleA(PSTR(_ExEditstr));
         let pIDH: *const IMAGE_DOS_HEADER = ExEdit as *const IMAGE_DOS_HEADER;
 
+        //println!("{:x}",ExEdit);
         if pIDH == null_mut() {
             NR::Base::DebugOutput(format!("pIDH is null"));
             panic!();
@@ -130,11 +132,21 @@ fn Init()
         let mut vecptr = NR::Reloc::ReadRelocAll(tmp);
         vecptr.sort();
         
-        //let mut file = File::create("reloc.txt").unwrap();
+        let mut file = std::fs::File::create("reloc.txt").unwrap();
+        let mut file2 = std::fs::File::create("reloc2.txt").unwrap();
+        let mut usizevec = Vec::<usize>::new();
         for i in vecptr
         {
-            println!("{}",i);
+            file.write(format!("{:x}\n",i).as_bytes());
+            usizevec.push(*((i + ImageBase as usize) as *const usize));
         }
+        usizevec.sort();
+        for i in usizevec
+        {
+            file2.write(format!("{:x}\n", i).as_bytes());
+        }
+
+
         /*
         let SecNum = (*pINH).FileHeader.NumberOfSections;
         //let SecHead = (ImageBase + (*pIDH).e_lfanew as u32 + size_of::<IMAGE_FILE_HEADER>() as u32 +(*pINH).FileHeader.SizeOfOptionalHeader as u32) as *const IMAGE_SECTION_HEADER;

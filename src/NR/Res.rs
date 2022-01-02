@@ -205,7 +205,7 @@ pub unsafe fn ReadImgResDirEnt(
     let bitfield = (*pImgResDirEnt).Anonymous2.Anonymous._bitfield;
     //if next is dir
     let adr = (bitfield & 0x7FFFFFFF) as usize + (*refNRTrait).ImageBase + (*refNRTrait).ResRVA;
-    if bitfield & 0x80000000 == 0x80000000
+    if bitfield & 0x80000000 != 0
     {
         println!("3");
         ReadImgResDir(adr as *const IMAGE_RESOURCE_DIRECTORY, refNRTrait, refVec, refRes);
