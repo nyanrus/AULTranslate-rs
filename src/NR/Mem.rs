@@ -38,25 +38,3 @@ pub unsafe fn ReadMemory(
     ReadProcessMemory(hProc, lpAddress, lpBuf, nSize, lpNumOfBytesWritten);
     VirtualProtectEx(hProc, lpAddress, nSize, old, &mut new);
 }
-
-/*
-pub unsafe fn WriteMem<T>(lpAddress: *mut T, lpBuf: *const T, count: usize)
-{
-    let mut old = PAGE_READWRITE;
-    let mut new = PAGE_READWRITE;
-    let nSize = count * size_of::<T>();
-    VirtualProtect(lpAddress as *const c_void, nSize, new, &mut old);
-    ReadProcessMemory(hprocess, lpbaseaddress, lpbuffer, nsize, lpnumberofbytesread)
-    VirtualProtect(lpAddress as *const c_void, nSize, old, &mut new);
-}
-
-pub unsafe fn ReadMem<T>(lpAddress: *const T, lpBuf: *mut T, count: usize)
-{
-    let mut old = PAGE_READONLY;
-    let mut new = PAGE_READONLY;
-    let nSize = count * size_of::<T>();
-    VirtualProtect(lpAddress as *const c_void, nSize, new, &mut old);
-    copy_nonoverlapping::<T>(lpAddress, lpBuf, count);
-    VirtualProtect(lpAddress as *const c_void, nSize, old, &mut new);
-}
- */
