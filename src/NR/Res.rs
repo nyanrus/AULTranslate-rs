@@ -1,5 +1,5 @@
 use core::mem::size_of;
-use windows::Win32::System::Diagnostics::Debug::IMAGE_SECTION_HEADER;
+use windows::Win32::System::Diagnostics::Debug::{IMAGE_SECTION_HEADER, IMAGE_DATA_DIRECTORY};
 use windows::Win32::System::SystemServices::{IMAGE_RESOURCE_DIRECTORY, IMAGE_RESOURCE_DATA_ENTRY};
 use windows::Win32::System::SystemServices::{
     IMAGE_RESOURCE_DIRECTORY_ENTRY, IMAGE_RESOURCE_DIR_STRING_U,
@@ -159,20 +159,45 @@ pub unsafe fn MakeImgResDir(NamedEntries : u16, IdEntries : u16) -> IMAGE_RESOUR
 
 pub unsafe fn Res2Size(refRes: &Base::Resource, num : usize) -> usize
 {
+    let json = serde_json::to_string_pretty(refRes).unwrap();
+    Base::DebugOutput(format!("{}",json));
     if num != 0
     {
+        //println!("{:?}",refRes);
         let mut size = 0usize;
-        for i in (*refRes).Nextptr.clone()
+        let mut i = 0usize;
+        while i < (*refRes).Nextptr.len()
         {
-            size += Res2Size(i.Res.as_ref(), num-1);
+            
+            Base::DebugOutput(format!("num : {:x}",num));
+            Base::DebugOutput(format!("i   : {:x}",i));
+            Base::DebugOutput(format!("    : {:?}", (*refRes).Nextptr[i].IsData));
+            
+            
+            if (*refRes).Nextptr[i].IsData
+            {
+                size += Data2Size();
+            }
+            else
+            {
+                size += Res2Size((*refRes).Nextptr[i].Res.as_ref(), num-1);
+            }
+            i += 1;
         }
         return size;
     }
     else
     {
+        let json = serde_json::to_string_pretty(refRes).unwrap();
+        //println!("{}",json);
         let mut size = size_of::<IMAGE_RESOURCE_DIRECTORY>();
         let numofent = refRes.Nextptr.len();
         size += numofent * size_of::<IMAGE_RESOURCE_DIRECTORY_ENTRY>();
         return size;
     }
+}
+
+pub unsafe fn Data2Size() -> usize
+{
+    size_of::<IMAGE_RESOURCE_DATA_ENTRY>()
 }

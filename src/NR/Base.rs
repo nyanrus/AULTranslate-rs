@@ -1,4 +1,5 @@
 use windows::Win32::{Foundation::{PSTR, HANDLE}, System::Diagnostics::Debug::{OutputDebugStringA}};
+use serde::{Serialize, Deserialize};
 
 #[derive(Debug)]
 pub struct ImgResDir
@@ -78,14 +79,15 @@ pub unsafe fn DebugOutput(s: String)
     OutputDebugStringA(PSTR(format!("{} --", s).as_mut_ptr()));
 }
 
-#[derive(Clone, Debug)]
+#[derive(Serialize,Deserialize,Clone,Debug)]
 pub struct Resource
 {
     pub NameId : Resource_0,
     pub Nextptr : Vec<Resource_1>,
 }
 
-#[derive(Clone, Debug)]
+
+#[derive(Serialize,Deserialize,Clone,Debug)]
 pub struct Resource_0
 {
     pub IsName : bool,
@@ -93,7 +95,8 @@ pub struct Resource_0
     pub Name : String,
 }
 
-#[derive(Clone, Debug)]
+
+#[derive(Serialize,Deserialize,Clone,Debug)]
 pub struct Resource_1
 {
     pub IsData : bool,

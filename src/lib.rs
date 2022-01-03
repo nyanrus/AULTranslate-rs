@@ -25,7 +25,7 @@ pub extern "stdcall" fn DllMain(hinst: HINSTANCE, reason: u32, reserved: *mut c_
     match reason {
         DLL_PROCESS_DETACH => { /* Detach(); */ }
         DLL_PROCESS_ATTACH => {
-            Init();
+            main();
         }
         _ => {}
     };
@@ -35,7 +35,7 @@ pub extern "stdcall" fn DllMain(hinst: HINSTANCE, reason: u32, reserved: *mut c_
 fn Init()
 {
     let mut word = String::new();
-    std::io::stdin().read_line(&mut word).ok();
+    //std::io::stdin().read_line(&mut word).ok();
 
     //panic!("hi!");
     let mut a_vec = Box::new(Vec::<String>::new());
@@ -85,7 +85,7 @@ fn Init()
         NR::Res::ReadImgResDir(pIRD, &mut a, &mut IRDEarrvec, &mut Resource);
         println!("finish");
         //println!("Resource : {:?}",Resource);
-        NR::Res::showRes(&Resource);
+        //NR::Res::showRes(&Resource);
         //NR::DebugOutput(format!("{:?}",nrresvec));
         VirtualProtect(resRVA as *const c_void, resIDD.Size as usize, old, &mut new);
         let tmp = (ImageBase + relocRVA) as usize;
@@ -105,5 +105,23 @@ fn Init()
         {
             file2.write(format!("{:x}\n", i).as_bytes()).unwrap();
         }
+
+        
+
+        let json = serde_json::to_string_pretty(&Resource).unwrap();
+        let mut file3 = std::fs::File::create("res.json").unwrap();
+        file3.write_all(json.as_bytes()).unwrap();
+
+        //println!("{:x}",NR::Res::Data2Size());
+        //println!("{:X}",NR::Res::Res2Size(&Resource, 0));
+        //println!("{:X}",NR::Res::Res2Size(&Resource, 1));
+        println!("{:X}",NR::Res::Res2Size(&Resource, 2));
+        //println!("{:X}",NR::Res::Res2Size(&Resource, 3));
+        //println!("{:X}",NR::Res::Res2Size(&Resource, 4));
     }
+}
+
+pub fn main()
+{
+    Init();
 }
