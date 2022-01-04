@@ -84,6 +84,7 @@ pub struct Resource
 {
     pub NameId : Resource_0,
     pub Nextptr : Vec<Resource_1>,
+
 }
 
 
@@ -101,6 +102,13 @@ pub struct Resource_1
 {
     pub IsData : bool,
     pub Res : Box<Resource>,
+    pub Data : Box<Res_Data>,
+}
+
+#[derive(Serialize,Deserialize,Clone,Debug)]
+pub struct Res_Data
+{
+    pub NameId : Resource_0,
     pub Data : Vec<u8>,
     pub CodePage : u32,
 }
@@ -122,7 +130,14 @@ impl Default for Resource_0
 impl Default for Resource_1
 {
     fn default() -> Self {
-        Resource_1{ IsData: Default::default(), Res: Default::default(), Data: Default::default(), CodePage: Default::default() }
+        Resource_1{ IsData: Default::default(), Res: Default::default(), Data: Default::default() }
+    }
+}
+
+impl Default for Res_Data
+{
+    fn default() -> Self {
+        Res_Data { NameId: Default::default(), Data: Default::default(), CodePage: Default::default() }
     }
 }
 
