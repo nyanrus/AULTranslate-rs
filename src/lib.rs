@@ -82,7 +82,7 @@ fn Init()
         };
         let mut IRDEarrvec = Vec::<[NR::Base::ImgResDirEnt; 3]>::new();
         let mut Resource = NR::Base::Resource::new();
-        NR::Res::ReadImgResDir(pIRD, &mut a, &mut IRDEarrvec, &mut Resource);
+        NR::Res::ReadImgResDirn(pIRD, &mut a, &mut Resource);
         println!("finish");
         //println!("Resource : {:?}",Resource);
         //NR::Res::showRes(&Resource);

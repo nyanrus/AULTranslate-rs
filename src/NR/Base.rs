@@ -84,7 +84,6 @@ pub struct Resource
 {
     pub NameId : Resource_0,
     pub Nextptr : Vec<Resource_1>,
-
 }
 
 
