@@ -1,5 +1,4 @@
 use core::mem::size_of;
-use windows::Win32::System::Diagnostics::Debug::{IMAGE_SECTION_HEADER, IMAGE_DATA_DIRECTORY};
 use windows::Win32::System::SystemServices::{IMAGE_RESOURCE_DIRECTORY, IMAGE_RESOURCE_DATA_ENTRY};
 use windows::Win32::System::SystemServices::{
     IMAGE_RESOURCE_DIRECTORY_ENTRY, IMAGE_RESOURCE_DIR_STRING_U,
@@ -47,8 +46,8 @@ pub unsafe fn ReadImgResDirEntn
         let pImgResDir = pImgResDir as *const IMAGE_RESOURCE_DIRECTORY;
         refRes.Nextptr.push(Base::Resource_1 { IsData: false, ..Default::default()});
         let len = refRes.Nextptr.len();
-        refRes.Nextptr[len-1].Res.NameId = NameId;
-        ReadImgResDirn(pImgResDir, refNRTrait, refRes.Nextptr[len-1].Res.as_mut());
+        refRes.Nextptr[len-1].Res = Some(Box::new(Base::Resource{ NameId, Nextptr: Default::default()}));
+        ReadImgResDirn(pImgResDir, refNRTrait, refRes.Nextptr[len-1].Res.as_deref_mut().unwrap());
     }
     else
     {
@@ -68,12 +67,12 @@ pub unsafe fn ReadImgResDirEntn
         }
         refRes.Nextptr.push(
             Base::Resource_1 { IsData: true,
-            Data: Box::new(
+            Data: Some(Box::new(
                 Base::Res_Data{
                     NameId,
                     Data: vec,
                 CodePage: (*pImgResDataEnt).CodePage,
-            }),
+            })),
         ..Default::default()});
     }
 }
@@ -149,12 +148,17 @@ pub unsafe fn showRes(refRes : &Base::Resource)
         println!("i : {:x}", i);
         if refRes.Nextptr[i].IsData
         {
-            println!("CodePage : {}",refRes.Nextptr[i].Data.CodePage);
-            println!("Data : {:?}",refRes.Nextptr[i].Data.Data);
+            println!("NameId : {:?}",refRes.Nextptr[i].Data.as_deref().unwrap().NameId);
+            println!("CodePage : {}",refRes.Nextptr[i].Data.as_deref().unwrap().CodePage);
+            //println!("Data : {:?}",refRes.Nextptr[i].Data.as_deref().unwrap().Data);
+            let a = refRes.Nextptr[i].Data.as_deref().unwrap().Data.as_slice();
+            let (a,b,c) = a.align_to::<u16>();
+            let Name = String::from_utf16_lossy(b);
+            println!("Name : {}",Name);
         }
         else
         {
-            showRes(refRes.Nextptr[i].Res.as_ref());
+            showRes(refRes.Nextptr[i].Res.as_deref().unwrap());
         }
         i += 1;
     }
@@ -197,7 +201,7 @@ pub unsafe fn Res2Size(refRes: &Base::Resource, num : usize) -> usize
             }
             else
             {
-                size += Res2Size((*refRes).Nextptr[i].Res.as_ref(), num-1);
+                size += Res2Size((*refRes).Nextptr[i].Res.as_ref().unwrap(), num-1);
             }
             i += 1;
         }

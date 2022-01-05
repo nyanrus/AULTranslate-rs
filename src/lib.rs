@@ -34,7 +34,7 @@ pub extern "stdcall" fn DllMain(hinst: HINSTANCE, reason: u32, reserved: *mut c_
 
 fn Init()
 {
-    let mut word = String::new();
+    //let mut word = String::new();
     //std::io::stdin().read_line(&mut word).ok();
 
     //panic!("hi!");
@@ -80,7 +80,7 @@ fn Init()
             ResRVA: resRVA as usize,
             ..Default::default()
         };
-        let mut IRDEarrvec = Vec::<[NR::Base::ImgResDirEnt; 3]>::new();
+        //let mut IRDEarrvec = Vec::<[NR::Base::ImgResDirEnt; 3]>::new();
         let mut Resource = NR::Base::Resource::new();
         NR::Res::ReadImgResDirn(pIRD, &mut a, &mut Resource);
         println!("finish");
@@ -106,18 +106,18 @@ fn Init()
             file2.write(format!("{:x}\n", i).as_bytes()).unwrap();
         }
 
-        
+        NR::Res::showRes(&Resource);
 
         let json = serde_json::to_string_pretty(&Resource).unwrap();
         let mut file3 = std::fs::File::create("res.json").unwrap();
         file3.write_all(json.as_bytes()).unwrap();
 
-        //println!("{:x}",NR::Res::Data2Size());
-        //println!("{:X}",NR::Res::Res2Size(&Resource, 0));
-        //println!("{:X}",NR::Res::Res2Size(&Resource, 1));
+        
+
+        println!("{:X}",NR::Res::Res2Size(&Resource, 0));
+        println!("{:X}",NR::Res::Res2Size(&Resource, 1));
         println!("{:X}",NR::Res::Res2Size(&Resource, 2));
-        //println!("{:X}",NR::Res::Res2Size(&Resource, 3));
-        //println!("{:X}",NR::Res::Res2Size(&Resource, 4));
+        println!("{:X}",NR::Res::Res2Size(&Resource, 3));
     }
 }
 

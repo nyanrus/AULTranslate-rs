@@ -100,8 +100,8 @@ pub struct Resource_0
 pub struct Resource_1
 {
     pub IsData : bool,
-    pub Res : Box<Resource>,
-    pub Data : Box<Res_Data>,
+    pub Res : Option<Box<Resource>>,
+    pub Data : Option<Box<Res_Data>>,
 }
 
 #[derive(Serialize,Deserialize,Clone,Debug)]
@@ -129,7 +129,7 @@ impl Default for Resource_0
 impl Default for Resource_1
 {
     fn default() -> Self {
-        Resource_1{ IsData: Default::default(), Res: Default::default(), Data: Default::default() }
+        Resource_1{ IsData: Default::default(), Res: None, Data: None}
     }
 }
 
@@ -148,3 +148,7 @@ impl Resource
     }
 }
 
+pub struct pointerbylevel
+{
+
+}
