@@ -47,7 +47,7 @@ fn Init()
         let hHandle = OpenProcess(PROCESS_ALL_ACCESS, false, GetCurrentProcessId());
         let mut _ExEditstr = String::from("exedit.auf").as_mut_ptr();
         let ExEdit = GetModuleHandleA(PSTR(_ExEditstr));
-        let pIDH: *const IMAGE_DOS_HEADER = ExEdit as *const IMAGE_DOS_HEADER;
+        let pIDH: *const IMAGE_DOS_HEADER = ExEdit.0 as *const IMAGE_DOS_HEADER;
 
         //println!("{:x}",ExEdit);
         if pIDH == null_mut() {
