@@ -148,7 +148,12 @@ impl Resource
     }
 }
 
+
+#[derive(Serialize,Deserialize,Clone,Debug)]
 pub struct pointerbylevel
 {
-
+    IsString : bool,
+    level : usize,
+    NameId_vec : Vec<Resource_0>,
+    pointer : usize,
 }

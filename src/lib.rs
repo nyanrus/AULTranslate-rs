@@ -34,8 +34,8 @@ pub extern "stdcall" fn DllMain(hinst: HINSTANCE, reason: u32, reserved: *mut c_
 
 fn Init()
 {
-    //let mut word = String::new();
-    //std::io::stdin().read_line(&mut word).ok();
+    let mut word = String::new();
+    std::io::stdin().read_line(&mut word).ok();
 
     //panic!("hi!");
     let mut a_vec = Box::new(Vec::<String>::new());
@@ -94,7 +94,9 @@ fn Init()
 
         let mut file = std::fs::File::create("reloc.txt").unwrap();
         let mut file2 = std::fs::File::create("reloc2.txt").unwrap();
+        let mut file3 = std::fs::File::create("reloc3.txt").unwrap();
         let mut usizevec = Vec::<usize>::new();
+        let mut vec2 = Vec::<usize>::new();
         for i in vecptr
         {
             file.write(format!("{:x}\n",i).as_bytes()).unwrap();
@@ -104,7 +106,18 @@ fn Init()
         for i in usizevec
         {
             file2.write(format!("{:x}\n", i).as_bytes()).unwrap();
+            if (*((i-2) as *const usize) == 0x15ff as usize)
+            {
+                vec2.push(i)
+            }
         }
+
+        for i in vec2
+        {
+            file3.write(format!("{:x}\n",i).as_bytes()).unwrap();
+        }
+
+        /*
 
         NR::Res::showRes(&Resource);
 
@@ -112,12 +125,11 @@ fn Init()
         let mut file3 = std::fs::File::create("res.json").unwrap();
         file3.write_all(json.as_bytes()).unwrap();
 
-        
-
         println!("{:X}",NR::Res::Res2Size(&Resource, 0));
         println!("{:X}",NR::Res::Res2Size(&Resource, 1));
         println!("{:X}",NR::Res::Res2Size(&Resource, 2));
         println!("{:X}",NR::Res::Res2Size(&Resource, 3));
+        */
     }
 }
 
